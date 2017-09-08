@@ -1,9 +1,8 @@
 class ListaNegociacoes {
 
-    constructor(armadilha) {
+    constructor() {
 
         this._listaNegociacoes = [];
-        this._armadilha = armadilha;
     }
 
     get negociacoes() {
@@ -14,12 +13,10 @@ class ListaNegociacoes {
     adiciona(negociacao) {
 
         this._listaNegociacoes.push(negociacao);
-        this._armadilha(this);
     }
 
     esvazia() {
 
         this._listaNegociacoes = [];
-        this._armadilha(this);
     }
 }
