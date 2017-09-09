@@ -4,9 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Learning IndexedDB</title>
+    <title>Learing IndexedDB</title>
 </head>
 <body>
+    <script src="js/app/models/Negociacao.js"></script>
+    <script>
     
+        let connection = null;
+        let openRequest = window.indexedDB.open('aluraframe', 3);
+
+        openRequest.onupgradeneeded = e => {
+
+            console.log('[DEV] Criando ou atualizando o banco...');
+            connection = e.target.result;
+            connection.createObjectStore('negociacoes', { autoIncrement: true });
+        }
+        openRequest.onsuccess = e => {
+
+            connection = e.target.result;
+            console.log('[DEV] Banco conectado.');
+            console.log('[DEV] Versão: ', connection.version);
+        }
+        openRequest.onerror = e => {
+
+            console.log('[DEV]' + e.target.error);
+        }
+
+        function adiciona() {
+            
+            let transaction = connection.transaction(['negociacoes'], 'readwrite');
+            let store = transaction.objectStore('negociacoes');
+            
+            let negociacao = new Negociacao(new Date(), 2, 25);
+            let addRequest = store.add(negociacao);
+
+            addRequest.onsuccess = () => console.log('Negociação adicionada com sucesso.');
+            addRequest.onerror  = () => console.log('Negociação não foi adicionada.');
+        }
+
+        function imprime() {
+
+            let transaction = connection.transaction(['negociacoes'], 'readwrite');
+            let store = transaction.objectStore('negociacoes');
+            let cursor = store.openCursor();
+            let negociacoes = [];
+
+            cursor.onsuccess = e => {
+                
+                let currentLine = e.target.result;
+
+                if ( currentLine ) {
+                    let value = currentLine.value;
+                    negociacoes.push(new Negociacao(value._data, value._quantidade, value._valor));
+                    currentLine.continue();
+                } else {
+                    console.log('[DEV] Busca finalizada.');
+                    console.log(negociacoes);
+                }      
+            }
+            cursor.onerror = e => {
+
+                let error = e.target.error;
+                console.log('[DEV]', error);
+            }
+        }
+        
+    </script>
 </body>
 </html>
