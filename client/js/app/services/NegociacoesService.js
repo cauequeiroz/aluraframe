@@ -12,7 +12,7 @@ class NegociacoesService {
             .then(connection => new NegociacaoDao(connection))
             .then(dao => dao.adiciona(negociacao))
             .then(() => 'Negociação adicionada com sucesso!')
-            .catch(() => {
+            .catch((erro) => {
                 throw new Error('Não foi possível cadastras a negociação.')
             });
     }
@@ -44,8 +44,9 @@ class NegociacoesService {
 
         return this.obterNegociaoes()
             .then(negociacoes =>
-                negociacoes.filter(negociacao => !arrayAtual.some(atual =>
-                        JSON.stringify(negociacao) === JSON.stringify(atual))))
+                negociacoes.filter(negociacao =>
+                    !arrayAtual.some(negociacaoExistente =>
+                        negociacao.isEquals(negociacaoExistente))))
             .catch(erro => {
                 throw new Error('Não foi possível importar as negociações');
             });

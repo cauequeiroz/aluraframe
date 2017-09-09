@@ -27,4 +27,9 @@ class Negociacao {
 
         return this._quantidade * this._valor;
     }
+
+    isEquals(negociacao) {
+        
+        return JSON.stringify(this) === JSON.stringify(negociacao);
+    }
 }
