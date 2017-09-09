@@ -70,13 +70,10 @@ class NegociacoesService {
 
         return this._http.get('negociacoes/semana')
             .then(response => {
-
                 return response.map(objeto =>
                     new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor));
             })
             .catch(erro => {
-                
-                console.log(`[DEV] ${erro}`);
                 throw new Error('Ocorreu um erro ao obter as negociações da semana.');
             });            
     }
@@ -85,13 +82,10 @@ class NegociacoesService {
         
         return this._http.get('negociacoes/anterior')
             .then(response => {
-
                 return response.map(objeto =>
                     new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor));
             })
             .catch(erro => {
-                
-                console.log(`[DEV] ${erro}`);
                 throw new Error('Ocorreu um erro ao obter as negociações da semana anterior.');
             }); 
     }
@@ -100,13 +94,10 @@ class NegociacoesService {
         
         return this._http.get('negociacoes/retrasada')
             .then(response => {
-
                 return response.map(objeto =>
                     new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor));
             })
-            .catch(erro => {
-                
-                console.log(`[DEV] ${erro}`);
+            .catch(erro => {                
                 throw new Error('Ocorreu um erro ao obter as negociações da semana retrasada.');
             }); 
     }
