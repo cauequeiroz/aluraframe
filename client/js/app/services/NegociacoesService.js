@@ -1,8 +1,54 @@
 class NegociacoesService {
-
+    
     constructor() {
-
+        
         this._http = new HttpService();
+    }
+    
+    cadastra(negociacao) {
+    
+        return ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.adiciona(negociacao))
+            .then(() => 'Negociação adicionada com sucesso!')
+            .catch(() => {
+                throw new Error('Não foi possível cadastras a negociação.')
+            });
+    }
+
+    apaga() {
+        
+        return ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.apaga())
+            .then(() => 'Negociações apagadas com sucesso.')
+            .catch(erro => {
+                throw new Error('Não foi possível apagar as negociações.')
+            });
+    }
+    
+    listaTodos() {
+    
+        return ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.listaTodos())
+            .catch(erro => {
+                throw new Error('Não foi possível listar as negociações.')
+            });
+    }
+
+    importa(arrayAtual) {
+
+        return this.obterNegociaoes()
+            .then(negociacoes =>
+                negociacoes.filter(negociacao => !arrayAtual.some(atual =>
+                        JSON.stringify(negociacao) === JSON.stringify(atual))))
+            .catch(erro => {
+                throw new Error('Não foi possível importar as negociações');
+            });
     }
 
     obterNegociaoes() {
@@ -64,4 +110,5 @@ class NegociacoesService {
                 throw new Error('Ocorreu um erro ao obter as negociações da semana retrasada.');
             }); 
     }
+
 }
