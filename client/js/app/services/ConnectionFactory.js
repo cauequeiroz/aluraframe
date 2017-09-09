@@ -42,23 +42,24 @@ let ConnectionFactory = (function() {
             });
         }
 
-        static _createStores(connection) {
-
-            stores.forEach(store => {
-
-                if ( connection.objectStoreNames.contains(store) )
-                    connection.deleteObjectStore(store);
-
-                connection.createObjectStore(store);
-            });
-        }
-
+        
         static closeConnection() {
-
+            
             if ( connection ) {
                 close();
                 connection = null;
             }
         }
-    }
+        
+        static _createStores(connection) {
+    
+            stores.forEach(store => {
+    
+                if ( connection.objectStoreNames.contains(store) )
+                    connection.deleteObjectStore(store);
+    
+                connection.createObjectStore(store);
+            });
+        }
+    }    
 })();

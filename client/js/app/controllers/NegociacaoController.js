@@ -19,22 +19,39 @@ class NegociacaoController {
             new MensagemView($('#mensagemView')),
             'texto'
         );
+
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.listaTodos())
+            .then(negociacoes =>
+                negociacoes.forEach(negociacao => 
+                    this._listaNegociacoes.adiciona(negociacao)));
     }
 
     adiciona(event) {
 
         event.preventDefault();
+        let negociacao = this._criaNegociacao();
 
-        this._listaNegociacoes.adiciona(this._criaNegociacao());
-        this._mensagem.texto = 'Negociação adicionada com sucesso!';        
-        this._limpaFormulario();
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.adiciona(negociacao))
+            .then(() => {
+                this._listaNegociacoes.adiciona(this._criaNegociacao());
+                this._mensagem.texto = 'Negociação adicionada com sucesso!';
+                this._limpaFormulario();
+            })
+            .catch(erro => this._mensagem.texto = erro);
     }
 
     importaNegociacoes() {
 
         let negociacoesService = new NegociacoesService();
 
-        negociacoesService.obterNegociaoes()
+        negociacoesService
+            .obterNegociaoes()
             .then(negociacoes => {
 
                 negociacoes.forEach(negociacao =>
@@ -47,8 +64,15 @@ class NegociacaoController {
 
     apaga() {
 
-        this._listaNegociacoes.esvazia();
-        this._mensagem.texto = "Negociações apagadas com sucesso!";
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.apaga())
+            .then(mensagem => {
+                this._mensagem.texto = mensagem;
+                this._listaNegociacoes.esvazia();
+            })
+            .catch(erro => this._mensagem.texto = erro);
     }
 
     ordena(coluna) {
