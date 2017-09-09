@@ -34,15 +34,15 @@ class NegociacaoController {
 
         let negociacoesService = new NegociacoesService();
 
-        negociacoesService.obterNegociaoesDaSemana((err, response) => {
-            if ( err ) {
-                this._mensagem.texto = err;
-                return;
-            }
+        negociacoesService.obterNegociaoes()
+            .then(negociacoes => {
 
-            response.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações importadas com sucesso!';
-        });
+                negociacoes.forEach(negociacao =>
+                    this._listaNegociacoes.adiciona(negociacao));                    
+                    
+                this._mensagem.texto = 'Negociações importadas com sucesso!';
+            })
+            .catch(erro => this._mensagem.texto = erro);
     }
 
     apaga() {
